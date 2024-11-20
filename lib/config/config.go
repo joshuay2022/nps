@@ -160,6 +160,10 @@ func dealHost(s string) *file.Host {
 	h.Target = new(file.Target)
 	h.Scheme = "all"
 	var headerChange string
+	var certFilePath string
+	var keyFilePath string
+	var certFilePrefix string
+	var hostDomain string
 	for _, v := range splitStr(s) {
 		item := strings.Split(v, "=")
 		if len(item) == 0 {
@@ -169,7 +173,8 @@ func dealHost(s string) *file.Host {
 		}
 		switch strings.TrimSpace(item[0]) {
 		case "host":
-			h.Host = item[1]
+			hostDomain = strings.TrimSpace(item[1])
+			h.Host = hostDomain
 		case "target_addr":
 			h.Target.TargetStr = strings.Replace(item[1], ",", "\n", -1)
 		case "host_change":
@@ -178,6 +183,12 @@ func dealHost(s string) *file.Host {
 			h.Scheme = item[1]
 		case "location":
 			h.Location = item[1]
+		case "host_cert_file":
+			certFilePath = strings.TrimSpace(item[1])
+		case "host_key_file":
+			keyFilePath = strings.TrimSpace(item[1])
+		case "host_cert_path_prefix":
+			certFilePrefix = strings.TrimSpace(item[1])
 		default:
 			if strings.Contains(item[0], "header") {
 				headerChange += strings.Replace(item[0], "header_", "", -1) + ":" + item[1] + "\n"
@@ -185,6 +196,19 @@ func dealHost(s string) *file.Host {
 			h.HeaderChange = headerChange
 		}
 	}
+
+	if len(certFilePrefix) > 0 && len(certFilePath) == 0 {
+		separator := "/"
+		if strings.Contains(certFilePrefix, "\\") {
+			separator = "\\"
+		}
+		certFilePrefix = strings.TrimSuffix(certFilePrefix, separator)
+		certFilePath = certFilePrefix + separator + hostDomain + separator + "fullchain.pem"
+		keyFilePath = certFilePrefix + separator + hostDomain + separator + "privkey.pem"
+	}
+	h.CertFilePath = certFilePath
+	h.KeyFilePath = keyFilePath
+
 	return h
 }
 

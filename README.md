@@ -1,16 +1,21 @@
 
 # NPS
-![](https://img.shields.io/github/stars/ehang-io/nps.svg)   ![](https://img.shields.io/github/forks/ehang-io/nps.svg)
-[![Gitter](https://badges.gitter.im/cnlh-nps/community.svg)](https://gitter.im/cnlh-nps/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-![Release](https://github.com/ehang-io/nps/workflows/Release/badge.svg)
-![GitHub All Releases](https://img.shields.io/github/downloads/ehang-io/nps/total)
-
-[README](https://github.com/ehang-io/nps/blob/master/README.md)|[中文文档](https://github.com/ehang-io/nps/blob/master/README_zh.md)
 
 NPS is a lightweight, high-performance, powerful **intranet penetration** proxy server, with a powerful web management terminal.
 
+## Modification
 
-![image](https://github.com/ehang-io/nps/blob/master/image/web.png?raw=true)
+- Add separate certificates for different https reverse hosts on different clients.
+    ```bash
+    [web1]
+    host_cert_file=/path/to/cert.crt ## specify the certificate file on server
+    host_key_file=/path/to/key.pem   ## specify the private key file on server
+
+    [web2]
+    host_cert_path_prefix=/path/to/dir/ ## specify the directory that contains the certificates for the host domain
+    ```
+
+    > `host_cert_file` covers `host_cert_path_prefix`. Certificate path should be `{host_cert_path_prefix}/{host}/fullchain.pem` and key file path should be `{host_cert_path_prefix}/{host}/privkey.pem`
 
 ## Feature
 
@@ -30,7 +35,7 @@ NPS is a lightweight, high-performance, powerful **intranet penetration** proxy 
 
 ### Installation
 
-> [releases](https://github.com/ehang-io/nps/releases)
+> [releases](https://github.com/joshuay2202/nps/releases)
 
 Download the corresponding system version, the server and client are separate.
 
@@ -71,9 +76,6 @@ For windows, run cmd as administrator and enter the program directory ```nps.exe
 ### Client connection
 - Click the + sign in front of the client in web management and copy the startup command.
 - Execute the startup command, Linux can be executed directly, Windows will replace ./npc with npc.exe and execute it with cmd.
-
-
-If you need to register to the system service, you can check [Register to the system service](https://ehang-io.github.io/nps/#/use?id=注册到系统服务)
 
 ### Configuration
 - After the client connects, configure the corresponding penetration service in the web.
